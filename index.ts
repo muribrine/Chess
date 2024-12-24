@@ -58,7 +58,8 @@ class Backend {
       ["/w_pawn.svg", "/PIECES/white_pawn.svg"],
       ["/w_rook.svg", "/PIECES/white_rook.svg"],
       ["/w_bishop.svg", "/PIECES/white_bishop.svg"],
-      ["/w_knight.svg", "/PIECES/white_knight.svg"]
+      ["/w_knight.svg", "/PIECES/white_knight.svg"],
+      ["/EMPTY.png", "/PIECES/EMPTY.png"]
     ];
 
     ROUTES.forEach(route => {

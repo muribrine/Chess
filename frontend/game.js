@@ -1,15 +1,19 @@
 let socket = new io();
 let FORM_WAITING = false;
+
+let username_display_element;
+let play_element;
+
 let logged_username = '';
 let logged_ELO = 0;
 
 let GAME_STATE = [
   'rnbqkbnr',
   'pppppppp',
-  '',
-  '',
-  '',
-  '',
+  '        ',
+  '        ',
+  '        ',
+  '        ',
   'PPPPPPPP',
   'RNBQKBNR'
 ];
@@ -27,13 +31,17 @@ const type_to_img = {
   'K': "/b_king.svg",
   'p': "/w_pawn.svg",
   'P': "/b_pawn.svg",
+  ' ': "/EMPTY.png",
 }
 
 socket.on('begin_game', (_timer, opponent_usr, opponent_ELO, yo_color) => {
 
-  if(yo_color == 1) { GAME_STATE.reverse() };
+  if ( yo_color == 1 ) { GAME_STATE.reverse() };
 
+  username_display_element = document.getElementById('username_display');
   document.getElementById('username_display').remove();
+
+  play_element = document.getElementById('PLAY');
   document.getElementById('PLAY').remove();
 
   let board = document.getElementById('BOARD');
@@ -69,7 +77,7 @@ socket.on('begin_game', (_timer, opponent_usr, opponent_ELO, yo_color) => {
 
       if(type_to_img[GAME_STATE[x][y]]) {
         square.append(piece);
-      };
+      }
       board.append(square);
 
   };
@@ -84,9 +92,24 @@ socket.on('begin_game', (_timer, opponent_usr, opponent_ELO, yo_color) => {
 
 });
 
+socket.on('turn', (new_game_state) => {
 
+  GAME_STATE = new_game_state;
+  update_board();
 
+});
 
+function update_board() {
+
+  for(let x = 0; x < 8; x++) {
+  for(let y = 0; y < 8; y++) {
+
+    let coords = `X${x}Y${y}`;
+
+  };
+  };
+
+};
 
 
 
