@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Michess | Login</title>
+    <link rel="stylesheet" href="./style.css">
+
+  </head>
+  <body>
+
+    <div class="blocking_overlay" id='blocking_overlay'></div>
+
+    <div id="LOGIN" class="FORM">
+
+      <h1>LOGIN</h1>
+
+      <input type="text" placeholder="Usuário" id="LOGIN_user" title="Usuário">
+      <input type="password" placeholder="Senha" id="LOGIN_password" title="Senha">
+      <button id="LOGIN_button" title="Entrar">Entrar</button>
+      <button id="GOTO_signin" class="button_small">Criar Nova Conta</button>
+
+    </div>
+
+    <div id="SIGNIN" class="FORM" style="display: none;">
+      
+      <h1>Sign In</h1>
+
+      <input type="text" placeholder="Usuário" id="SIGNIN_user" title="Usuário">
+      <input type="password" placeholder="Senha" id="SIGNIN_password" title="Senha">
+      <input type="password" placeholder="Confirme a senha" id="SIGNIN_password_confirm" title="Senha">
+      <button id="SIGNIN_button">Criar Nova Conta</button>
+      <button id="GOTO_login" class="button_small">Login</button>
+
+    </div>
+
+    <div id="HOME" class="HOME" style="display: none;">
+
+      <p id='username_display'>Usuário: ${User} | ${Elo} ELO</p>
+
+      <div id="PLAY" class="PLAY">
+
+        <button id="PLAY_button_0">Jogar 5min</button>
+        <button id="PLAY_button_1">Jogar 10min</button>
+        <button id="PLAY_button_2">Jogar 10min | 5</button>
+
+      </div>
+
+      <div class="GAME" id="GAME">
+       
+        <p id="BOARD_opponent_display">OPPONENT | ELO</p>
+
+        <div class="BOARD" id="BOARD"></div>
+
+        <p id="BOARD_user_display">YOU | ELO</p>
+
+      </div>
+
+    </div>
+
+  </body>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="./game.js" defer></script>
+
+</html>

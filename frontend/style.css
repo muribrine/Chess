@@ -1,0 +1,250 @@
+* {
+
+  margin: 0;
+  padding: 0;
+
+  font-family: monospace;
+  font-size: 14px;
+
+}
+
+html {
+  width: 100%;
+  height: 100vh;
+
+  background-color: hsl(210, 20%, 10%);
+
+}
+
+body {
+  width: 85%;
+  height: 100%;
+
+  margin: auto;
+
+  background-color: hsl(210, 20%, 12%);
+
+}
+
+.blocking_overlay {
+
+  position: fixed;
+  background-color: hsl(0, 10%, 90%, 0.3);
+  width: 100%;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  z-index: 9998;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  cursor: wait;
+
+  display: none;
+
+}
+
+.FORM {
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  height: 100%;
+
+}
+
+.FORM * {
+
+  font-size: 1.25rem;
+  font-weight: bold;
+
+}
+
+.FORM h1 {
+
+  color: white;
+  font-size: 1.75rem;
+
+  margin-bottom: 2rem;
+
+}
+
+.FORM input {
+
+  padding: 1rem;
+  margin: 1rem;
+  width: 22rem;
+
+  background-color: hsl(210, 100%, 98%);
+
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent;
+  border-radius: 4px;
+
+  transition: ease-in-out 0.2s;
+
+}
+
+.FORM input:focus {
+
+  border-color: hsl(150, 100%, 50%);
+
+  transition: ease-in-out 0.2s;
+
+}
+
+button {
+
+  padding: 1rem;
+  margin: 1rem;
+  margin-top: 5rem;
+  width: 17rem;
+
+  background-color: hsl(150, 100%, 50%);
+
+  border-style: solid;
+  border-width: 1px;
+  border-color: black;
+  border-radius: 4px;
+
+  transition: ease-in-out 0.2s;
+
+  cursor: pointer;
+
+  font-size: 1.25rem;
+  font-weight: bold;
+
+}
+
+button:hover {
+
+  background-color: hsl(150, 100%, 75%);
+  border-color: white;
+  
+  transition: ease-in-out 0.2s;
+
+}
+
+.button_small {
+
+  padding: 0.75rem;
+  margin-top: 2rem;
+  font-size: 1rem;
+  width: 12rem;
+
+  background-color: hsl(150, 100%, 75%);
+
+  transition: ease-in-out 0.2s;
+
+}
+
+.button_small:hover {
+
+  background-color: hsl(150, 100%, 90%);
+  border-color: white;
+  transition: ease-in-out 0.2s;
+
+}
+
+.HOME {
+
+  width: 100%;
+  height: 100vh;
+
+}
+
+.HOME p {
+
+  padding: 2rem;
+
+  color: white;
+  font-size: 1.25rem;
+  font-weight: bold;
+
+}
+
+.PLAY {
+
+  display: flex;
+  flex-direction: column;
+
+}
+
+.PLAY button {
+
+  margin: 1rem;
+
+}
+
+.BOARD {
+
+  width: 52rem;
+  height: 52rem;
+  margin: auto;
+
+  display: grid;
+  grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+
+}
+
+.Square {
+  width: 6.5rem;
+  height: 6.5rem;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.SquareA {
+  border-top-left-radius: 16px;
+}
+
+.SquareB {
+  border-top-right-radius: 16px;
+}
+
+.SquareC {
+  border-bottom-left-radius: 16px;
+}
+
+.SquareD {
+  border-bottom-right-radius: 16px;
+}
+
+.White_Square {
+  background-color: hsl(210, 30%, 95%);
+}
+
+.Black_Square {
+  background-color: hsl(150, 30%, 30%);
+}
+
+.BLACK_PIECE {
+  width: 4.5rem;
+  height: 4.5rem;
+  cursor: pointer;
+}
+
+.WHITE_PIECE {
+  width: 4.5rem;
+  height: 4.5rem;
+  cursor: pointer;
+}
+
+.Black_Square .WHITE_PIECE {
+  filter: brightness(0) saturate(100%) invert(100%) sepia(5%) saturate(4267%) hue-rotate(294deg) brightness(92%) contrast(90%);
+}
+
+.White_Square .WHITE_PIECE {
+  filter: brightness(0) saturate(100%) invert(70%) sepia(2%) saturate(2277%) hue-rotate(314deg) brightness(89%) contrast(97%);
+}
+
+.White_Square .BLACK_PIECE {
+  filter: brightness(0) saturate(100%) invert(8%) sepia(9%) saturate(1949%) hue-rotate(166deg) brightness(98%) contrast(92%);
+}
+
