@@ -1,0 +1,7 @@
+{
+  "imports": {
+    "express": "npm:express@^4.21.2",
+    "pocketbase": "npm:pocketbase@^0.24.0",
+    "socket.io": "npm:socket.io@^4.8.1"
+  }
+}
