@@ -47,12 +47,18 @@ class Backend {
       ["/", "/frontend/index.html"],
       ["/style.css", "/frontend/style.css"],
       ["/game.js", "/frontend/game.js"],
-      ["/king.svg", "/PIECES/king.svg"],
-      ["/queen.svg", "/PIECES/queen.svg"],
-      ["/pawn.svg", "/PIECES/pawn.svg"],
-      ["/rook.svg", "/PIECES/rook.svg"],
-      ["/bishop.svg", "/PIECES/bishop.svg"],
-      ["/knight.svg", "/PIECES/knight.svg"]
+      ["/b_king.svg", "/PIECES/king.svg"],
+      ["/b_queen.svg", "/PIECES/queen.svg"],
+      ["/b_pawn.svg", "/PIECES/pawn.svg"],
+      ["/b_rook.svg", "/PIECES/rook.svg"],
+      ["/b_bishop.svg", "/PIECES/bishop.svg"],
+      ["/b_knight.svg", "/PIECES/knight.svg"],
+      ["/w_king.svg", "/PIECES/white_king.svg"],
+      ["/w_queen.svg", "/PIECES/white_queen.svg"],
+      ["/w_pawn.svg", "/PIECES/white_pawn.svg"],
+      ["/w_rook.svg", "/PIECES/white_rook.svg"],
+      ["/w_bishop.svg", "/PIECES/white_bishop.svg"],
+      ["/w_knight.svg", "/PIECES/white_knight.svg"]
     ];
 
     ROUTES.forEach(route => {

@@ -15,18 +15,18 @@ let GAME_STATE = [
 ];
 
 const type_to_img = {
-  'r': "/rook.svg",
-  'R': "/rook.svg",
-  'n': "/knight.svg",
-  'N': "/knight.svg",
-  'b': "/bishop.svg",
-  'B': "/bishop.svg",
-  'q': "/queen.svg",
-  'Q': "/queen.svg",
-  'k': "/king.svg",
-  'K': "/king.svg",
-  'p': "/pawn.svg",
-  'P': "/pawn.svg",
+  'r': "/w_rook.svg",
+  'R': "/b_rook.svg",
+  'n': "/w_knight.svg",
+  'N': "/b_knight.svg",
+  'b': "/w_bishop.svg",
+  'B': "/b_bishop.svg",
+  'q': "/w_queen.svg",
+  'Q': "/b_queen.svg",
+  'k': "/w_king.svg",
+  'K': "/b_king.svg",
+  'p': "/w_pawn.svg",
+  'P': "/b_pawn.svg",
 }
 
 socket.on('begin_game', (_timer, opponent_usr, opponent_ELO, yo_color) => {
@@ -74,6 +74,8 @@ socket.on('begin_game', (_timer, opponent_usr, opponent_ELO, yo_color) => {
 
   };
   };
+
+  if(yo_color == 1) { GAME_STATE.reverse() };
 
   document.getElementById('BOARD_opponent_display').innerText = `${opponent_usr} | ${opponent_ELO} ELO`;
   document.getElementById('BOARD_user_display').innerText = `${logged_username} | ${logged_ELO} ELO`;

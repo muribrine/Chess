@@ -235,16 +235,3 @@ button:hover {
   height: 4.5rem;
   cursor: pointer;
 }
-
-.Black_Square .WHITE_PIECE {
-  filter: brightness(0) saturate(100%) invert(100%) sepia(5%) saturate(4267%) hue-rotate(294deg) brightness(92%) contrast(90%);
-}
-
-.White_Square .WHITE_PIECE {
-  filter: brightness(0) saturate(100%) invert(70%) sepia(2%) saturate(2277%) hue-rotate(314deg) brightness(89%) contrast(97%);
-}
-
-.White_Square .BLACK_PIECE {
-  filter: brightness(0) saturate(100%) invert(8%) sepia(9%) saturate(1949%) hue-rotate(166deg) brightness(98%) contrast(92%);
-}
-
