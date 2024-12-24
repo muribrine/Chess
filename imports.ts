@@ -17,6 +17,16 @@ type User = {
   ELO: number,
   socket: any, //May not always be present.
   socketID: string,
-}
+};
 
-export {http, express, Server, dirname, fileURLToPath, Logger, DB, Pocketbase, User, ReturnType };
+type GAME = {
+  timer: number,
+  clocks: number[],
+  player_1: User,
+  player_2: User,
+  player_1_color: number,
+  player_2_color: number,
+  GAME_STATE: string[]
+};
+
+export {http, express, Server, dirname, fileURLToPath, Logger, DB, Pocketbase, User, ReturnType, GAME };

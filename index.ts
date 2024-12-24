@@ -1,4 +1,4 @@
-import { http, express, Server, dirname, fileURLToPath, Logger, DB, User, ResultType } from "./imports.ts";
+import { http, express, Server, dirname, fileURLToPath, Logger, DB, User, ReturnType, GAME } from "./imports.ts";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 class Backend {
@@ -10,9 +10,9 @@ class Backend {
   logger: Logger;
   db: DB;
 
-  logged_players: any;
-  game_queue: any;
-  games: any;
+  logged_players: { [id: string] : User };
+  game_queue: any; //TYPE IS User[];
+  games: { [id: string] : GAME };
 
   constructor (port: Number, logger: Logger, db_url: string) {
 
@@ -90,7 +90,7 @@ class Backend {
 
         this.logger.log('Got a login request.', 'normal');
 
-        let auth_request_result: ResultType<any> = await this.db.auth(user, password);
+        let auth_request_result: ReturnType<any> = await this.db.auth(user, password);
         if (auth_request_result.valid) {
           let auth_data = auth_request_result.value;
           let user: User = {
@@ -124,7 +124,7 @@ class Backend {
           "ELO": 0,
         };
 
-        let new_user_request_result: ResultType<any> = await this.db.signin(user_data);
+        let new_user_request_result: ReturnType<any> = await this.db.signin(user_data);
         if(new_user_request_result.valid) {
           let new_user = new_user_request_result.value;
           this.logger.log(`Created a new user, user: ${new_user['username']}.`, "normal");
@@ -178,22 +178,22 @@ class Backend {
 
   execute_game(timer: number, player1: User, player1_color: number, player2: User, player2_color: number) {
 
-    let p1_usr = player1.username;
-    let p2_usr = player2.username;
+    let game_id = player1.socketID + '***' + player2.socketID;
 
-    this.games[p1_usr + '***' + p2_usr] = {
-      'timer': timer,
-      'player1': player1,
-      'player1_color': player1_color,
-      'player2': player2,
-      'player2_color': player2_color,
-      'GAME_STATE': [
+    this.games[game_id] = {
+      timer: timer,
+      clocks: [timer, timer],
+      player_1: player1,
+      player_1_color: player1_color,
+      player_2: player2,
+      player_2_color: player2_color,
+      GAME_STATE: [
         'rnbqkbnr',
         'pppppppp',
-        '',
-        '',
-        '',
-        '',
+        '        ',
+        '        ',
+        '        ',
+        '        ',
         'PPPPPPPP',
         'RNBQKBNR',
       ],

@@ -101,10 +101,16 @@ socket.on('turn', (new_game_state) => {
 
 function update_board() {
 
+  console.log(GAME_STATE);
+
   for(let x = 0; x < 8; x++) {
   for(let y = 0; y < 8; y++) {
 
-    let coords = `X${x}Y${y}`;
+    let piece_id = `img_X${x}Y${y}`;
+    let piece_src = type_to_img[GAME_STATE[x][y]];
+
+    let piece = document.getElementById(piece_id);
+    piece.src = piece_src;
 
   };
   };
