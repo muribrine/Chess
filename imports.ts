@@ -7,4 +7,16 @@ import { Logger } from "./logger.ts";
 import { DB } from "./db.ts";
 import Pocketbase from "pocketbase";
 
-export {http, express, Server, dirname, fileURLToPath, Logger, DB, Pocketbase };
+type ReturnType<T> = {
+  valid: boolean,
+  value: T
+};
+
+type User = {
+  username: string,
+  ELO: number,
+  socket: any, //May not always be present.
+  socketID: string,
+}
+
+export {http, express, Server, dirname, fileURLToPath, Logger, DB, Pocketbase, User, ReturnType };

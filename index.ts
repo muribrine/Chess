@@ -1,4 +1,4 @@
-import { http, express, Server, dirname, fileURLToPath, Logger, DB } from "./imports.ts";
+import { http, express, Server, dirname, fileURLToPath, Logger, DB, User, ResultType } from "./imports.ts";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 class Backend {
@@ -83,14 +83,21 @@ class Backend {
 
         this.logger.log('Got a login request.', 'normal');
 
-        let auth_data = await this.db.auth(user, password);
-        if(auth_data[0]) {
-          auth_data = auth_data[1];
-          this.logger.log(`Login request sucessful, user: ${auth_data['record']['username']}.`, "normal");
-          this.logged_players[socketID] = [socket,auth_data];
+        let auth_request_result: ResultType<any> = await this.db.auth(user, password);
+        if (auth_request_result.valid) {
+          let auth_data = auth_request_result.value;
+          let user: User = {
+            username: auth_data['record']['username'],
+            ELO: auth_data['record']['ELO'],
+            socket: socket,
+            socketID: socketID,
+          }
+
+          this.logger.log(`Login request sucessful, user: ${user.username}.`, "normal");
+          this.logged_players[socketID] = user;
           socket.emit('login_sucess', auth_data);
         } else {
-          this.logger.log(`Login request failed. user: ${user}.`, "normal");
+          this.logger.log(`Login request failed. socketID: ${socketID}. Supposed user: ${user}.`, "normal");
           socket.emit('login_failed');
         }
 
@@ -110,9 +117,9 @@ class Backend {
           "ELO": 0,
         };
 
-        let new_user = await this.db.signin(user_data);
-        if(new_user[0]) {
-          new_user = new_user[1];
+        let new_user_request_result: ResultType<any> = await this.db.signin(user_data);
+        if(new_user_request_result.valid) {
+          let new_user = new_user_request_result.value;
           this.logger.log(`Created a new user, user: ${new_user['username']}.`, "normal");
           socket.emit('signin_sucess', new_user);
         } else {
@@ -124,32 +131,30 @@ class Backend {
 
       socket.on('queue_for_play', (timer: number) => {
 
-        this.logger.log(`Got a request to play from the user: ${this.logged_players[socketID][1]['record'['username']]}.`, "normal");
+        let user: User = this.logged_players[socketID];
+
+        this.logger.log(`Got a request to play from the user: ${user.username}.`, "normal");
 
         // TIMER: 0 = 5min; 1 = 10min; 2 = 10min | 5;
 
         if(this.game_queue[timer]) {
 
-          let yo_username = this.logged_players[socketID][1]['record']['username'];
-          let yo_ELO = this.logged_players[socketID][1]['record']['ELO'];
-          let yo_color = Math.random() > 0.5 ? 1 : -1;
+          let opponent: User = this.game_queue[timer];
 
-          let op_username = this.game_queue[timer][1]['record']['username'];
-          let op_ELO = this.game_queue[timer][1]['record']['ELO'];
-          let op_color = -yo_color;
-          let op_socket = this.game_queue[timer][0];
+          let yo_username = user.username; let yo_ELO = user.ELO; let yo_color = Math.random() > 0.5 ? 1 : -1;
+          let op_username = opponent.username; let op_ELO = opponent.ELO; let op_color = -yo_color; let op_socket = opponent.socket;
 
           this.logger.log(`Starting a match between the players: ${yo_username}(${yo_color}) and ${op_username}(${op_color})`, "normal");
           socket.emit('begin_game', timer, op_username, op_ELO, yo_color);
           op_socket.emit('begin_game', timer, yo_username, yo_ELO, op_color);
-          this.execute_game(timer, this.game_queue[timer], op_color, this.logged_players[socketID], yo_color);
+          this.execute_game(timer, opponent, op_color, user, yo_color);
 
           this.game_queue[timer] = 0;
 
         } else {
 
-          this.logger.log(`Found no match for the player: ${this.logged_players[socketID][1]['record']['username']}.`, "normal");
-          this.game_queue[timer] = this.logged_players[socketID];
+          this.logger.log(`Found no match for the player: ${user.username}. Adding to game queue.`, "normal");
+          this.game_queue[timer] = user;
 
         };
 
@@ -164,21 +169,29 @@ class Backend {
 
   };
 
-  execute_game(timer: number, p1: any, p1c: number, p2: any, p2c: number) {
+  execute_game(timer: number, player1: User, player1_color: number, player2: User, player2_color: number) {
 
-    let p1_usr = p1[1]['record']['username'];
-    let p2_usr = p2[1]['record']['username'];
+    let p1_usr = player1.username;
+    let p2_usr = player2.username;
 
     this.games[p1_usr + '***' + p2_usr] = {
       'timer': timer,
-      'player1': p1,
-      'player1_color': p1c,
-      'player2': p2,
-      'player2_color': p2c
+      'player1': player1,
+      'player1_color': player1_color,
+      'player2': player2,
+      'player2_color': player2_color,
+      'GAME_STATE': [
+        'rnbqkbnr',
+        'pppppppp',
+        '',
+        '',
+        '',
+        '',
+        'PPPPPPPP',
+        'RNBQKBNR',
+      ],
     };
-
   };
-
 };
 
 

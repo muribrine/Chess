@@ -1,36 +1,28 @@
-import { Pocketbase } from "./imports.ts";
+import { Pocketbase, ReturnType } from "./imports.ts";
 
 class DB {
 
   client: Pocketbase;
 
-  constructor(url: string) {
-
-    this.client = new Pocketbase(url);
-
-  };
-
-  async get_collection(collection: string) {
-    try {
-      return [true, await this.client.collection(collection).getFullList({})];
-    } catch (error) {
-      return [false, error];
-    }
-  };
+  constructor(url: string) { this.client = new Pocketbase(url) };
 
   async auth(user: string, password: string) {
     try {
-      return [true, await this.client.collection('users').authWithPassword(user, password)];
+      let result: ReturnType<any> = {valid: true, value: await this.client.collection('users').authWithPassword(user, password)};
+      return result;
     } catch (error) {
-      return [false, error];
+      let result: ReturnType<Error> = {valid: false, value: error};
+      return result;
     }
   };
 
   async signin(user_data: object) {
     try {
-      return [true, await this.client.collection('users').create(user_data)];
+      let result: ReturnType<any> = {valid: true, value: await this.client.collection('users').create(user_data)};
+      return result;
     } catch (error) {
-      return [false, error];
+      let result: ReturnType<Error> = {valid: false, value: error};
+      return result;
     }
   }
 
