@@ -1,211 +1,40 @@
-import { http, express, Server, dirname, fileURLToPath, Logger, DB, User, ReturnType, GAME } from "./imports.ts";
-const __dirname = dirname(fileURLToPath(import.meta.url));
+import { http, express, Server, __dirname, config } from './imports.ts';
+import { DataBase } from './types.ts';
 
-class Backend {
+import { set_up_routing } from './router.ts';
+import { set_up_sockets } from './sockets.ts';
 
-  express_app: any;
-  http_server: any;
-  http_server_port: Number;
-  socket_io_server: Server;
-  logger: Logger;
-  db: DB;
+let express_app: any;
+let http_server: any;
+let http_server_port: number = config.HTTP_SERVER_PORT;
+let sio_server: any; //Socket IO server.
 
-  logged_players: { [id: string] : User };
-  game_queue: any; //TYPE IS User[];
-  games: { [id: string] : GAME };
-
-  constructor (port: Number, logger: Logger, db_url: string) {
-
-    this.logger = logger;
-    this.logged_players = {};
-    this.game_queue = [0,0,0];
-    this.games = {};
-
-    this.db = new DB(db_url);
-    if(!this.db) { throw Error("Could not connect to database.")};
-
-    this.express_app = express();
-    if(!this.express_app) { throw Error("Could not initialize express.")};
-
-    this.http_server = http.createServer(this.express_app);
-    this.http_server_port = port;
-    if(!this.http_server) { throw Error("Could not initialize HTTP server.")};
-
-    this.socket_io_server = new Server(this.http_server);
-    if(!this.socket_io_server) { throw Error("Could not initialize SOCKET_IO server.")};
-
-    this.set_up_routing();
-    this.set_up_socket_io();
-
-    this.http_server.listen(this.http_server_port, () => {this.logger.log(`HTTP server listening on port ${this.http_server_port}.`, "normal")});
-
-  };
-
-  set_up_routing() {
-
-    const ROUTES = [
-      ["/", "/frontend/index.html"],
-      ["/style.css", "/frontend/style.css"],
-      ["/game.js", "/frontend/game.js"],
-      ["/b_king.svg", "/PIECES/king.svg"],
-      ["/b_queen.svg", "/PIECES/queen.svg"],
-      ["/b_pawn.svg", "/PIECES/pawn.svg"],
-      ["/b_rook.svg", "/PIECES/rook.svg"],
-      ["/b_bishop.svg", "/PIECES/bishop.svg"],
-      ["/b_knight.svg", "/PIECES/knight.svg"],
-      ["/w_king.svg", "/PIECES/white_king.svg"],
-      ["/w_queen.svg", "/PIECES/white_queen.svg"],
-      ["/w_pawn.svg", "/PIECES/white_pawn.svg"],
-      ["/w_rook.svg", "/PIECES/white_rook.svg"],
-      ["/w_bishop.svg", "/PIECES/white_bishop.svg"],
-      ["/w_knight.svg", "/PIECES/white_knight.svg"],
-      ["/EMPTY.png", "/PIECES/EMPTY.png"]
-    ];
-
-    ROUTES.forEach(route => {
-      let request = route[0];
-      let response = route[1];
-
-      this.express_app.get(request, (_req: any, res:any) => {
-        this.logger.log(`Got a request for path '${request}'.`,"normal");
-        res.sendFile(__dirname + response);
-      });
-
-    });
-
-  };
-
-  set_up_socket_io() {
-
-    this.socket_io_server.on('connection', (socket: any) => {
-
-      const socketID =
-      'Socket_' +
-      (Math.random() + 1).toString(36).substring(2) +
-      (Math.random() + 1).toString(36).substring(2) +
-      (Math.random() * Math.pow(10,18));
-      // TODO: Use a actually random number.
-
-      socket.on('login', async (user: string, password: string) => {
-
-        this.logger.log('Got a login request.', 'normal');
-
-        let auth_request_result: ReturnType<any> = await this.db.auth(user, password);
-        if (auth_request_result.valid) {
-          let auth_data = auth_request_result.value;
-          let user: User = {
-            username: auth_data['record']['username'],
-            ELO: auth_data['record']['ELO'],
-            socket: socket,
-            socketID: socketID,
-          }
-
-          this.logger.log(`Login request sucessful, user: ${user.username}.`, "normal");
-          this.logged_players[socketID] = user;
-          socket.emit('login_sucess', auth_data);
-        } else {
-          this.logger.log(`Login request failed. socketID: ${socketID}. Supposed user: ${user}.`, "normal");
-          socket.emit('login_failed');
-        }
-
-      });
-
-      socket.on('signin', async (user: string, password:string) => {
-
-        this.logger.log('Got a signin request.', 'normal');
-
-        const user_data = {
-          "password": password,
-          "passwordConfirm": password,
-          "username": user,
-          "email": "",
-          "emailVisibility": false,
-          "verified": false,
-          "ELO": 0,
-        };
-
-        let new_user_request_result: ReturnType<any> = await this.db.signin(user_data);
-        if(new_user_request_result.valid) {
-          let new_user = new_user_request_result.value;
-          this.logger.log(`Created a new user, user: ${new_user['username']}.`, "normal");
-          socket.emit('signin_sucess', new_user);
-        } else {
-          this.logger.log(`Failed to create a new user.`, "normal");
-          socket.emit('signin_failed');
-        };
-
-      });
-
-      socket.on('queue_for_play', (timer: number) => {
-
-        let user: User = this.logged_players[socketID];
-
-        this.logger.log(`Got a request to play from the user: ${user.username}.`, "normal");
-
-        // TIMER: 0 = 5min; 1 = 10min; 2 = 10min | 5;
-
-        if(this.game_queue[timer]) {
-
-          let opponent: User = this.game_queue[timer];
-
-          let yo_username = user.username; let yo_ELO = user.ELO; let yo_color = Math.random() > 0.5 ? 1 : -1;
-          let op_username = opponent.username; let op_ELO = opponent.ELO; let op_color = -yo_color; let op_socket = opponent.socket;
-
-          this.logger.log(`Starting a match between the players: ${yo_username}(${yo_color}) and ${op_username}(${op_color})`, "normal");
-          socket.emit('begin_game', timer, op_username, op_ELO, yo_color);
-          op_socket.emit('begin_game', timer, yo_username, yo_ELO, op_color);
-          this.execute_game(timer, opponent, op_color, user, yo_color);
-
-          this.game_queue[timer] = 0;
-
-        } else {
-
-          this.logger.log(`Found no match for the player: ${user.username}. Adding to game queue.`, "normal");
-          this.game_queue[timer] = user;
-
-        };
-
-      });
-
-      socket.on('disconnect', () => {
-        this.db.client.authStore.clear();
-        delete this.logged_players[socketID];
-      });
-
-    });
-
-  };
-
-  execute_game(timer: number, player1: User, player1_color: number, player2: User, player2_color: number) {
-
-    let game_id = player1.socketID + '***' + player2.socketID;
-
-    this.games[game_id] = {
-      timer: timer,
-      clocks: [timer, timer],
-      player_1: player1,
-      player_1_color: player1_color,
-      player_2: player2,
-      player_2_color: player2_color,
-      GAME_STATE: [
-        'rnbqkbnr',
-        'pppppppp',
-        '        ',
-        '        ',
-        '        ',
-        '        ',
-        'PPPPPPPP',
-        'RNBQKBNR',
-      ],
-    };
-  };
-};
-
-
-const logger = new Logger();
+let db: DataBase;
+let db_url = config.DATA_BASE_URL;
 
 try {
-  new Backend(8080, logger,  `https://mi-chess.pockethost.io/`);
+
+  db = new DataBase(db_url);
+  if(!db) { throw Error('Could not connect to database.')};
+
+  express_app = express();
+  if(!express_app) { throw Error('Could not create the express app.')};
+
+  http_server = http.createServer(express_app);
+  if(!http_server) { throw Error('Could not create the HTTP server.')};
+
+  sio_server = new Server(http_server);
+  if(!sio_server) { throw Error('Could not create the SocketIO server.')};
+
+  set_up_routing(express_app, __dirname, config.ROUTES);
+  set_up_sockets(sio_server, db);
+
+  http_server.listen(http_server_port, () => {
+
+    console.log(`HTTP server listening on port ${http_server_port}`);
+
+  });
+
 } catch (error) {
-  logger.log(error, "error");
-}
+  console.error(error);
+};

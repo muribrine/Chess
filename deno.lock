@@ -3,7 +3,8 @@
   "specifiers": {
     "npm:express@^4.21.2": "4.21.2",
     "npm:pocketbase@0.24": "0.24.0",
-    "npm:socket.io@^4.8.1": "4.8.1"
+    "npm:socket.io@^4.8.1": "4.8.1",
+    "npm:uuid@^11.0.3": "11.0.3"
   },
   "npm": {
     "@socket.io/component-emitter@3.1.2": {
@@ -481,6 +482,9 @@
     "utils-merge@1.0.1": {
       "integrity": "sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA=="
     },
+    "uuid@11.0.3": {
+      "integrity": "sha512-d0z310fCWv5dJwnX1Y/MncBAqGMKEzlBb1AOf7z9K8ALnd0utBX/msg/fA0+sbyN1ihbMsLhrBlnl1ak7Wa0rg=="
+    },
     "vary@1.1.2": {
       "integrity": "sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg=="
     },
@@ -492,7 +496,8 @@
     "dependencies": [
       "npm:express@^4.21.2",
       "npm:pocketbase@0.24",
-      "npm:socket.io@^4.8.1"
+      "npm:socket.io@^4.8.1",
+      "npm:uuid@^11.0.3"
     ]
   }
 }

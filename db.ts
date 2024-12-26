@@ -1,31 +1,32 @@
-import { Pocketbase, ReturnType } from "./imports.ts";
+import { Pocketbase } from './imports.ts';
+import { Maybe } from './types.ts';
 
-class DB {
+class DataBase {
 
-  client: Pocketbase;
+  pb: Pocketbase;
 
-  constructor(url: string) { this.client = new Pocketbase(url) };
+  constructor(db_url: string) { this.pb = new Pocketbase(db_url) };
 
-  async auth(user: string, password: string) {
+  async auth_user(username: string, password: string) : Promise<Maybe<any>> {
     try {
-      let result: ReturnType<any> = {valid: true, value: await this.client.collection('users').authWithPassword(user, password)};
+      let result: Maybe<object> = {v:true, c: await this.pb.collection('users').authWithPassword(username, password)};
       return result;
     } catch (error) {
-      let result: ReturnType<Error> = {valid: false, value: error};
+      let result: Maybe<Error> = {v:false, c: error};
       return result;
     }
   };
 
-  async signin(user_data: object) {
+  async sign_in_user(user_data: object) : Promise<Maybe<any>> {
     try {
-      let result: ReturnType<any> = {valid: true, value: await this.client.collection('users').create(user_data)};
+      let result: Maybe<object> = {v:true, c: await this.pb.collection('users').create(user_data)};
       return result;
     } catch (error) {
-      let result: ReturnType<Error> = {valid: false, value: error};
+      let result: Maybe<Error> = {v:false, c:error};
       return result;
     }
-  }
+  };
 
 };
 
-export { DB };
+export { DataBase };

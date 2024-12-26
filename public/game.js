@@ -122,9 +122,9 @@ function update_board() {
 
 
 
-document.getElementById('PLAY_button_0').onclick = () => { show_blocking_overlay(); socket.emit('queue_for_play', 0) };
-document.getElementById('PLAY_button_1').onclick = () => { show_blocking_overlay(); socket.emit('queue_for_play', 1) };
-document.getElementById('PLAY_button_2').onclick = () => { show_blocking_overlay(); socket.emit('queue_for_play', 2) };
+document.getElementById('PLAY_button_0').onclick = () => { show_blocking_overlay(); socket.emit('queue_request', 0) };
+document.getElementById('PLAY_button_1').onclick = () => { show_blocking_overlay(); socket.emit('queue_request', 1) };
+document.getElementById('PLAY_button_2').onclick = () => { show_blocking_overlay(); socket.emit('queue_request', 2) };
 
 function show_blocking_overlay() { FORM_WAITING = true; document.getElementById('blocking_overlay').style['display'] = 'block' };
 function hide_blocking_overlay() { FORM_WAITING = false; document.getElementById('blocking_overlay').style['display'] = 'none' };
@@ -135,7 +135,7 @@ socket.on('login_sucess', (auth_data) => {
   document.getElementById('LOGIN').remove(); document.getElementById('SIGNIN').remove();
   document.getElementById('HOME').style['display'] = 'block';
 
-  logged_username = auth_data['record']['username']; logged_ELO = auth_data['record']['ELO'];
+  logged_username = auth_data['username']; logged_ELO = auth_data['ELO'];
   document.getElementById('username_display').innerText = `Usuário: ${logged_username} | ${logged_ELO} ELO`;
 });
 
@@ -152,7 +152,7 @@ socket.on('signin_sucess', (_auth_data) => {
 document.getElementById('LOGIN_button').onclick = () => { 
   let user = document.getElementById('LOGIN_user').value;
   let password = document.getElementById('LOGIN_password').value;
-  if (!FORM_WAITING) { show_blocking_overlay(); socket.emit('login', user, password) };
+  if (!FORM_WAITING) { show_blocking_overlay(); socket.emit('login_request', user, password) };
 };
 
 document.getElementById('SIGNIN_button').onclick = () => {
@@ -161,7 +161,7 @@ document.getElementById('SIGNIN_button').onclick = () => {
   let confirm_password = document.getElementById('SIGNIN_password_confirm').value;
   if (password != confirm_password ) { return };
 
-  if (!FORM_WAITING) { show_blocking_overlay(); socket.emit('signin', user, password) };
+  if (!FORM_WAITING) { show_blocking_overlay(); socket.emit('signin_request', user, password) };
 };
 
 document.getElementById('GOTO_signin').onclick = () => {
