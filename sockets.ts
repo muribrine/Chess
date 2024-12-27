@@ -64,7 +64,7 @@ function set_up_sockets(sio_server: any, db: DataBase) {
 
       queue[match_time] = {v:false, c:{username:'',ELO:0,socket:undefined, active_game_ID: ''}};
 
-      execute_game(user1, user2, colors, match_time);
+      set_up_game(user1, user2, colors, match_time);
 
     });
 
@@ -77,7 +77,7 @@ function set_up_sockets(sio_server: any, db: DataBase) {
   });
 };
 
-function execute_game(user1: User, user2: User, colors: string[], timer: number) {
+function set_up_game(user1: User, user2: User, colors: string[], timer: number) {
 
   let starting_clock_time: number;
   let added_clock_time: number;
