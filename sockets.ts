@@ -101,13 +101,28 @@ function set_up_game(user1: User, user2: User, colors: string[], timer: number) 
     GAME_STATE: [
       'RNBQKBNR',
       'PPPPPPPP',
-      '        ',
-      '        ',
-      '        ',
-      '        ',
+      '........',
+      '........',
+      '........',
+      '........',
       'pppppppp',
       'rnbqkbnr',
     ],
+  };
+
+  for (let i = 0; i < 2; i++) {
+    
+    let user: User = games[game_ID].players[i];
+    user.socket.on('took_a_turn', (GAME_STATE: string[]) => {
+
+      games[game_ID].GAME_STATE = GAME_STATE;
+
+      let other_user = games[game_ID].players[1 - i];
+
+      other_user.socket.emit('game_state_update', games[game_ID].GAME_STATE);
+
+    });
+
   };
 
 };

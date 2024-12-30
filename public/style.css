@@ -198,6 +198,8 @@ button:hover {
   justify-content: center;
   align-items: center;
 
+  cursor: pointer;
+
 }
 
 .SquareA {
@@ -216,12 +218,12 @@ button:hover {
   border-bottom-right-radius: 16px;
 }
 
-.White_Square {
+.white_square {
   background-color: hsl(210, 30%, 95%);
 }
 
-.Black_Square {
-  background-color: hsl(150, 30%, 30%);
+.black_square {
+  background-color: hsl(200, 25%, 50%);
 }
 
 .BLACK_PIECE {
@@ -234,4 +236,22 @@ button:hover {
   width: 4.5rem;
   height: 4.5rem;
   cursor: pointer;
+}
+
+.Highlight {
+
+  border-style: solid;
+  box-sizing: border-box;
+  border-color: hsl(0, 100%, 60%, 0.8);
+  border-width: 8px;
+
+}
+
+.Selected {
+
+  border-style: solid;
+  box-sizing: border-box;
+  border-color: hsl(50, 100%, 60%, 0.8);
+  border-width: 8px;
+
 }
