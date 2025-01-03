@@ -2,7 +2,10 @@
   "ROUTES": [
     ["/", "/public/index.html"],
     ["/style.css", "/public/style.css"],
-    ["/game.js", "/public/game.js"],
+    ["/js/game.js", "/public/js/game.js"],
+    ["/js/functions.js", "/public/js/functions.js"],
+    ["/js/moves.js", "/public/js/moves.js"],
+    ["/js/ui.js", "/public/js/ui.js"],
     ["/b_king.svg", "/public/imgs/king.svg"],
     ["/b_queen.svg", "/public/imgs/queen.svg"],
     ["/b_pawn.svg", "/public/imgs/pawn.svg"],
